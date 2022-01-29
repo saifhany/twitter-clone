@@ -1,0 +1,46 @@
+extends layouts/main-layout.pug
+
+block content
+    if !profileUser
+        span.errorMessage Check the url you are trying to access
+    else
+        script.
+            var profileUserId = '!{profileUser._id}'
+            var selectedTab = '!{selectedTab}'
+        - followingText = profileUser.following.length
+        - followersText = profileUser.followers.length
+
+        .profileHeaderContainer
+            .coverPhotoContainer
+                .userImageContainer
+                    img(src=profileUser.profilePic, alt="User profile image")
+            .profileButtonContainer
+                if profileUser._id != user._id
+                    a.profileButton(href=`/message/${profileUser._id}`)
+                        i.far.fa-envelope
+                    - var profileUserId = profileUser._id.toString()
+                    - if(user.following && user.following.includes(profileUserId))
+                        +createFollowButton(profileUser._id, true)
+                    - else
+                        +createFollowButton(profileUser._id, false)
+            .userDetailContainer
+                span.displayName #{profileUser.firstName} #{profileUser.lastName}
+                span.username @#{profileUser.username}
+                span.description #{profileUser.description}
+
+                .followersContainer
+                    a(href=`/profile/${profileUser.username}/following`) 
+                        span.value #{followingText}
+                        span Following
+                    a(href=`/profile/${profileUser.username}/followers`) 
+                        span#followersValue.value #{followersText}
+                        span Followers
+        .tabsContainer
+            +createTab('Posts', `/profile/${profileUser.username}`, selectedTab != 'replies')
+            +createTab('Replies', `/profile/${profileUser.username}/replies`, selectedTab == 'replies')
+
+        .postsContainer
+
+        +createPostModals(user)
+block scripts 
+    script(src="/js/profile.js") 
