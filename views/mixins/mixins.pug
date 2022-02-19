@@ -40,6 +40,36 @@ mixin createDeletePostModal(userLoggedIn)
                     button.btn.btn-secondary(type='button' data-dismiss='modal') Close
                     button#deletePostButton.btn.btn-primary(type='button') Delete
 
+mixin createImageUploadModal(userLoggedIn)
+    #imageUploadModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='imageUploadLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#exampleModalLabel.modal-title Upload a new profile picture
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') ×
+                .modal-body
+                   input#fileUpload(type="file", name="fileUpload")
+                   img#imagePreview
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
+                    button#imageUploadButton.btn.btn-primary(type='button') Save
+
+mixin createCoverPhotoModal(userLoggedIn)
+    #coverPhotoModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='coverPhotoLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#exampleModalLabel.modal-title Upload a new cover photo
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') ×
+                .modal-body
+                   input#coverPhotoUpload(type="file", name="fileUpload")
+                   img#coverPhotoPreview
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
+                    button#coverPhotoButton.btn.btn-primary(type='button') Save
+
 mixin createPostModals(userLoggedIn)
     +createReplyModal(userLoggedIn)
     +createDeletePostModal()

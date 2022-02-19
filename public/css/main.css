@@ -240,7 +240,7 @@ nav a.blue {
     padding: var(--spacing);
 }
 
-.coverPhotoContainer {
+.coverPhotoSection {
     height: 180px;
     background-color: var(--blue);
     position: relative;
@@ -252,6 +252,9 @@ nav a.blue {
     margin-left: var(--spacing);
     position: absolute;
     bottom: -66px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .profileHeaderContainer .userImageContainer img {
@@ -344,4 +347,37 @@ nav a.blue {
 .user .userDetailsContainer {
     flex: 1;
     padding: 0 var(--spacing);
+}
+
+.profilePictureButton,
+.coverPhotoButton {
+    position: absolute;
+    font-size: 50px;
+    color: rgba(0, 0, 0, 0, 6);
+    display: none;
+}
+
+.userImageContainer:hover .profilePictureButton,
+.coverPhotoContainer:hover .coverPhotoButton {
+    display: block;
+}
+
+.coverPhotoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.coverPhotoContainer img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+#imagePreview,
+#coverPhotoPreview {
+    width: 100%;
+    display: block;
+    max-width: 100%;
 }

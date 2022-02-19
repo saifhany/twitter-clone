@@ -1,3 +1,5 @@
+var cropper = ''
+
 $('#postTextarea, #replyTextarea').keyup((event) => {
     var textarea = $(event.target)
     var value = textarea.val().trim()
@@ -69,6 +71,84 @@ $('#replyModal').on('show.bs.modal', (event) => {
 $('#replyModal').on('hidden.bs.modal', () =>
     $('#originalPostContainer').html('')
 )
+
+$('#fileUpload').change(function() {
+    if (this.files && this.files[0]) {
+        var reader = new FileReader()
+        reader.onload = (e) => {
+            const image = document.getElementById('imagePreview')
+            image.src = e.target.result
+
+            cropper = new Cropper(image, {
+                aspectRatio: 1 / 1,
+                background: false,
+            })
+        }
+        reader.readAsDataURL(this.files[0])
+    }
+})
+
+$('#imageUploadButton').click(() => {
+    var canvas = cropper.getCroppedCanvas()
+
+    if (canvas == null) {
+        alert('could not upload')
+        return
+    }
+
+    canvas.toBlob((blob) => {
+        var formData = new FormData()
+        formData.append('croppedImage', blob)
+
+        $.ajax({
+            url: '/api/user/profilePicture',
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: () => location.reload(),
+        })
+    })
+})
+
+$('#coverPhotoUpload').change(function() {
+    if (this.files && this.files[0]) {
+        var reader = new FileReader()
+        reader.onload = (e) => {
+            const image = document.getElementById('coverPhotoPreview')
+            image.src = e.target.result
+
+            cropper = new Cropper(image, {
+                aspectRatio: 16 / 9,
+                background: false,
+            })
+        }
+        reader.readAsDataURL(this.files[0])
+    }
+})
+
+$('#coverPhotoButton').click(() => {
+    var canvas = cropper.getCroppedCanvas()
+
+    if (canvas == null) {
+        alert('could not upload')
+        return
+    }
+
+    canvas.toBlob((blob) => {
+        var formData = new FormData()
+        formData.append('croppedImage', blob)
+
+        $.ajax({
+            url: '/api/user/coverPhoto',
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: () => location.reload(),
+        })
+    })
+})
 
 $(document).on('click', '.post', (event) => {
     var element = $(event.target)

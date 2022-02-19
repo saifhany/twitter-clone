@@ -2,6 +2,10 @@ const express = require('express')
 const router = express.Router()
 const app = express()
 const bodyParser = require('body-parser')
+const path = require('path')
+const fs = require('fs')
+const multer = require('multer')
+const upload = multer({ dest: 'uploads/' })
 const User = require('../../schemas/UserSchema')
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -47,5 +51,61 @@ router.get('/:id/following', async(req, res, next) => {
         })
         .catch((error) => res.sendStatus(400))
 })
+
+router.post(
+    '/profilePicture',
+    upload.single('croppedImage'),
+    async(req, res, next) => {
+        if (!req.file) {
+            return res.sendStatus(400)
+        }
+
+        var filePath = `/uploads/images/${req.file.filename}.png`
+        var tempPath = req.file.path
+        var targetPath = path.join(__dirname, `../../${filePath}`)
+
+        fs.rename(tempPath, targetPath, async(error) => {
+            if (error != null) {
+                return res.sendStatus(400)
+            }
+
+            req.session.user = await User.findByIdAndUpdate(
+                req.session.user._id, {
+                    profilePic: filePath,
+                }, { new: true }
+            )
+
+            res.sendStatus(200)
+        })
+    }
+)
+
+router.post(
+    '/coverPhoto',
+    upload.single('croppedImage'),
+    async(req, res, next) => {
+        if (!req.file) {
+            return res.sendStatus(400)
+        }
+
+        var filePath = `/uploads/images/${req.file.filename}.png`
+        var tempPath = req.file.path
+        var targetPath = path.join(__dirname, `../../${filePath}`)
+
+        fs.rename(tempPath, targetPath, async(error) => {
+            if (error != null) {
+                return res.sendStatus(400)
+            }
+
+            req.session.user = await User.findByIdAndUpdate(
+                req.session.user._id, {
+                    coverPhoto: filePath,
+                }, { new: true }
+            )
+
+            res.sendStatus(200)
+        })
+    }
+)
 
 module.exports = router
