@@ -26,7 +26,7 @@ mixin createReplyModal(userLoggedIn)
                     button.btn.btn-secondary(type='button' data-dismiss='modal') Close
                     button#submitReply.btn.btn-primary(type='button' disabled) Reply
 
-mixin createDeletePostModal(userLoggedIn)
+mixin createDeletePostModal()
     #deletePostModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='deletePostLabel' aria-hidden='true')
         .modal-dialog(role='document')
             .modal-content
@@ -40,7 +40,7 @@ mixin createDeletePostModal(userLoggedIn)
                     button.btn.btn-secondary(type='button' data-dismiss='modal') Close
                     button#deletePostButton.btn.btn-primary(type='button') Delete
 
-mixin createImageUploadModal(userLoggedIn)
+mixin createImageUploadModal()
     #imageUploadModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='imageUploadLabel' aria-hidden='true')
         .modal-dialog(role='document')
             .modal-content
@@ -55,7 +55,7 @@ mixin createImageUploadModal(userLoggedIn)
                     button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
                     button#imageUploadButton.btn.btn-primary(type='button') Save
 
-mixin createCoverPhotoModal(userLoggedIn)
+mixin createCoverPhotoModal()
     #coverPhotoModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='coverPhotoLabel' aria-hidden='true')
         .modal-dialog(role='document')
             .modal-content
@@ -69,6 +69,30 @@ mixin createCoverPhotoModal(userLoggedIn)
                 .modal-footer
                     button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
                     button#coverPhotoButton.btn.btn-primary(type='button') Save
+
+mixin createPinModal()
+    #pinModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='pinLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#exampleModalLabel.modal-title Pin this post
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') ×
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
+                    button#pinButton.btn.btn-primary(type='button') Pin
+
+mixin createUnpinModal()
+    #unpinModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='unpinLabel' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#exampleModalLabel.modal-title Unpin this post
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') ×
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
+                    button#unpinButton.btn.btn-primary(type='button') Unpin
 
 mixin createPostModals(userLoggedIn)
     +createReplyModal(userLoggedIn)

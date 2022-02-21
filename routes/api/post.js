@@ -142,6 +142,18 @@ router.post('/:id/retweet', async(req, res, next) => {
     res.status(200).send(post)
 })
 
+router.put('/:id', async(req, res, next) => {
+    if (req.body.pinned !== undefined) {
+        await Post.updateMany({ postedBy: req.session.user, pinned: false }).catch(
+            (error) => res.sendStatus(400)
+        )
+    }
+
+    Post.findByIdAndUpdate(req.params.id, req.body)
+        .then(() => res.sendStatus(200))
+        .catch((error) => res.sendStatus(400))
+})
+
 async function getPosts(filter) {
     var results = await Post.find(filter)
         .populate('postedBy')

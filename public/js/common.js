@@ -48,7 +48,7 @@ $('#deletePostModal').on('click', (event) => {
     $.ajax({
         url: `/api/post/${postId}`,
         type: 'delete',
-        success: (postata) => location.reload(),
+        success: () => location.reload(),
     })
 })
 
@@ -56,6 +56,40 @@ $('#deletePostModal').on('show.bs.modal', (event) => {
     var button = $(event.relatedTarget)
     var postId = getPostId(button)
     $('#deletePostButton').data('id', postId)
+})
+
+$('#pinModal').on('show.bs.modal', (event) => {
+    var button = $(event.relatedTarget)
+    var postId = getPostId(button)
+    $('#pinButton').data('id', postId)
+})
+
+$('#unpinModal').on('show.bs.modal', (event) => {
+    var button = $(event.relatedTarget)
+    var postId = getPostId(button)
+    $('#unpinButton').data('id', postId)
+})
+
+$('#pinButton').on('click', (event) => {
+    var postId = $(event.target).data('id')
+
+    $.ajax({
+        url: `/api/post/${postId}`,
+        type: 'put',
+        data: { pinned: true },
+        success: () => location.reload(),
+    })
+})
+
+$('#unpinButton').on('click', (event) => {
+    var postId = $(event.target).data('id')
+
+    $.ajax({
+        url: `/api/post/${postId}`,
+        type: 'put',
+        data: { pinned: false },
+        success: () => location.reload(),
+    })
 })
 
 $('#replyModal').on('show.bs.modal', (event) => {
@@ -229,6 +263,19 @@ $(document).on('click', '.followButton', (event) => {
     })
 })
 
+function outputPinnedPost(results, container) {
+    if (results.length === 0) {
+        container.hide()
+    }
+
+    container.html('')
+
+    results.forEach((result) => {
+        var html = createPost(result)
+        container.append(html)
+    })
+}
+
 function outputPost(results, container) {
     container.html('')
     if (!Array.isArray(results)) {
@@ -299,9 +346,20 @@ function createPost(postData) {
                        </div>`
     }
 
-    var buttonDelete = ''
+    var button = ''
+    var pinnedClass = ''
+    var pinnedText = ''
+    var dataTarget = '#pinModal'
     if (postData.postedBy._id == user._id) {
-        buttonDelete = `<button data-id='${postData._id}' data-toggle='modal' data-target='#deletePostModal'>
+        if (postData.pinned === true) {
+            pinnedClass = 'active'
+            pinnedText = '<i class="fas fa-thumbtack"></i> <span>Pinned post</span>'
+            dataTarget = '#unpinModal'
+        }
+        button = `<button class='pinned ${pinnedClass}' data-id='${postData._id}' data-toggle='modal' data-target='${dataTarget}'>
+                            <i class='fas fa-thumbtack'></i>
+                        </button>
+                        <button data-id='${postData._id}' data-toggle='modal' data-target='#deletePostModal'>
                             <i class='fas fa-times'></i>
                         </button>`
     }
@@ -315,13 +373,14 @@ function createPost(postData) {
                         <img src='${postedBy.profilePic}'>
                     </div>
                     <div class="postContentContainer">
+                        <div class="pinnedText">${pinnedText}</div>
                         <div class="header">
                             <a href='/profile/${
                               postedBy.username
                             }' class="displayName">${displayName}</a>
                             <span class="username">@${postedBy.username}</span>
                             <span class="date">${timestamp}</span>
-                            ${buttonDelete}
+                            ${button}
                         </div>
                         ${replyFlag}
                         <div class="postBody">

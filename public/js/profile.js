@@ -7,9 +7,16 @@ $(document).ready(() => {
 })
 
 function loadPosts() {
-    $.get('/api/post', { postedBy: profileUserId, isReply: false }, (results) => {
-        outputPost(results, $('.postsContainer'))
+    $.get('/api/post', { postedBy: profileUserId, pinned: true }, (results) => {
+        outputPinnedPost(results, $('.pinnedPostContainer'))
     })
+
+    $.get(
+        '/api/post', { postedBy: profileUserId, isReply: false, pinned: false },
+        (results) => {
+            outputPost(results, $('.postsContainer'))
+        }
+    )
 }
 
 function loadReplies() {

@@ -381,3 +381,16 @@ nav a.blue {
     display: block;
     max-width: 100%;
 }
+
+.pinned.active {
+    color: var(--blue);
+}
+
+.pinnedText {
+    color: var(--greyText);
+    font-size: 12px;
+}
+
+.pinnedPostContainer {
+    border-bottom: 10px solid rgba(230, 236, 240);
+}
