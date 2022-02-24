@@ -394,3 +394,26 @@ nav a.blue {
 .pinnedPostContainer {
     border-bottom: 10px solid rgba(230, 236, 240);
 }
+
+.searchBarContainer {
+    position: relative;
+    color: var(--gray);
+    padding: 10px var(--spacing);
+    display: flex;
+    align-items: center;
+}
+
+.searchBarContainer i {
+    position: absolute;
+    left: 25px;
+}
+
+.searchBarContainer #searchBox {
+    height: 36px;
+    width: 100%;
+    padding: 0 var(--spacing) 0 40px;
+    border: none;
+    background-color: var(--lightGrey);
+    border-radius: 50px;
+    color: var(--grey);
+}

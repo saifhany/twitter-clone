@@ -10,6 +10,23 @@ const User = require('../../schemas/UserSchema')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
+router.get('/', async(req, res, next) => {
+    var searchObj = req.query
+
+    if (req.query.search !== undefined) {
+        searchObj = {
+            $or: [
+                { firstName: { $regex: req.query.search, $options: 'i' } },
+                { lastName: { $regex: req.query.search, $options: 'i' } },
+                { username: { $regex: req.query.search, $options: 'i' } },
+            ],
+        }
+    }
+
+    User.find(searchObj)
+        .then((results) => res.status(200).send(results))
+        .catch((error) => res.sendStatus(404))
+})
 router.put('/:id/follow', async(req, res, next) => {
     var userId = req.params.id
     var user = await User.findById(userId)

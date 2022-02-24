@@ -17,6 +17,11 @@ router.get('/', async(req, res, next) => {
             // { postedBy: '61dfd49369b8b37f05dd5098', replyTo: { '$exists': false } }
     }
 
+    if (searchObj.search !== undefined) {
+        searchObj.content = { $regex: searchObj.search, $options: 'i' }
+        delete searchObj.search
+    }
+
     if (searchObj.followingOnly !== undefined) {
         var followingOnly = searchObj.followingOnly == 'true'
         if (followingOnly) {
