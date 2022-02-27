@@ -24,7 +24,7 @@ html(lang="en")
                         i.fas.fa-search
                     a(href="/") 
                         i.far.fa-bell
-                    a(href="/") 
+                    a(href="/message") 
                         i.far.fa-envelope
 
                     a(href="/profile") 
@@ -35,6 +35,7 @@ html(lang="en")
                 .mainSectionContainer.col-8.col-md-5 
                     .titleContainer 
                         h1 #{pageTitle}
+                        block headerButton
                     block content
                 .col-2 
                     span thrid column

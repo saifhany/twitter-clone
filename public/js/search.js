@@ -1,5 +1,3 @@
-var timer
-
 $('#searchBox').keydown((e) => {
     var textbox = $(e.target)
     var value = textbox.val()

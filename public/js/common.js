@@ -329,14 +329,14 @@ function outputUsers(results, container) {
     }
 }
 
-function createUserHtml(data) {
+function createUserHtml(data, followButton = true) {
     var name = data.firstName + ' ' + data.lastName
     var isFollowing = user.following && user.following.includes(data._id)
     var text = isFollowing ? 'Following' : 'Follow'
     var buttonClass = isFollowing ? 'followButton following' : 'followButton'
 
     var button = ''
-    if (user._id != data._id) {
+    if (user._id != data._id && followButton) {
         button = `<div class='followButtonContainer'>
                     <button class='${buttonClass}' data-user='${data._id}'>${text}</button>
                   </div>`
