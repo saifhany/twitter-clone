@@ -466,3 +466,35 @@ nav a.blue {
     border-radius: 3px;
     display: inline-block;
 }
+
+.resultListItem {
+    padding: 7px;
+    border-bottom: 1px solid var(--lightGrey);
+    display: flex;
+    align-items: center;
+}
+
+.resultListItem:hover {
+    background-color: #f2f2f2
+}
+
+.resultsDetailContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.resultsDetailContainer .heading {
+    font-weight: 500;
+}
+
+.resultsDetailContainer .subText {
+    font-size: 14px;
+    color: var(--gray)
+}
+
+.resultListItem img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
