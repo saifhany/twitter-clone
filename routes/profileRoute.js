@@ -49,8 +49,6 @@ async function getPayload(username, userLoggedIn) {
         }
     }
 
-    console.log(user)
-
     return {
         pageTitle: user.username,
         user: userLoggedIn,

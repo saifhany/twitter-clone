@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 router.get('/', async(req, res, next) => {
     Chat.find({ users: { $elemMatch: { $eq: req.session.user._id } } })
         .populate('users')
+        .sort({ updatedAt: -1 })
         .then((results) => res.status(200).send(results))
         .catch((error) => res.sendStatus(400))
 })

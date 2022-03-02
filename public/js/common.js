@@ -290,7 +290,6 @@ function outputPost(results, container) {
 
 function outputPostWithReplies(result, container) {
     container.html('')
-    console.log(result)
 
     if (result.replyTo !== undefined && result.replyTo._id !== undefined) {
         var html = createPost(result.replyTo)
