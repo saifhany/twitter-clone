@@ -94,6 +94,27 @@ mixin createUnpinModal()
                     button.btn.btn-secondary(type='button' data-dismiss='modal') Cancel
                     button#unpinButton.btn.btn-primary(type='button') Unpin
 
+mixin createChatImage(chatData, user)
+
+    - var i = 0 // counter
+    - var maxImage = 2 // jumlah image yg ditampilkan
+    - var remainingUsers = chatData.users.length - maxImage
+    - remainingUsers-- // hapus user login
+
+    .chatImageContainer
+        if (remainingUsers > 0)
+            .userCount
+                span +#{remainingUsers}
+        
+        each userLoggedIn in chatData.users
+            if  userLoggedIn._id == user._id
+                - continue // skip user looping, mk image tidak ditampilkan
+            else if i >= maxImage
+                - break // keluar dari looping
+
+            img(src=userLoggedIn.profilePic, alt="User's profile picture", title=userLoggedIn.firstName)
+            - i++
+
 mixin createPostModals(userLoggedIn)
     +createReplyModal(userLoggedIn)
     +createDeletePostModal()

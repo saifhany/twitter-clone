@@ -30,7 +30,7 @@ router.get('/:chatId', async(req, res, next) => {
     var chat = await Chat.findOne({
         _id: chatId,
         users: { $elemMatch: { $eq: userId } },
-    })
+    }).populate('users')
 
     if (chat == null) {
         // private message. chatId adalah userId
@@ -68,7 +68,7 @@ function getChatByUserId(userLoggedInId, otherUserId) {
     }, {
         new: true,
         upsert: true,
-    })
+    }).populate('users')
 }
 
 function createPayload(userLoggedIn, title) {
