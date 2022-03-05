@@ -29,6 +29,12 @@ const createChatHtml = (chat) => {
             </a>`
 }
 
+const getChatUsers = (users) => {
+    if (users.length == 1) return users
+
+    return users.filter((item) => item._id != user._id)
+}
+
 const getChatName = (chat) => {
     var chatName = chat.chatName
 
@@ -39,12 +45,6 @@ const getChatName = (chat) => {
     }
 
     return chatName
-}
-
-const getChatUsers = (users) => {
-    if (users.length == 1) return users
-
-    return users.filter((item) => item._id != user._id)
 }
 
 const getChatImageElement = (chat) => {

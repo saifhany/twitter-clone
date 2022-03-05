@@ -6,10 +6,17 @@ const Chat = require('../../schemas/ChatSchema')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
-router.get('/', async(req, res, next) => {
+router.get('/', (req, res, next) => {
     Chat.find({ users: { $elemMatch: { $eq: req.session.user._id } } })
         .populate('users')
         .sort({ updatedAt: -1 })
+        .then((results) => res.status(200).send(results))
+        .catch((error) => res.sendStatus(400))
+})
+
+router.get('/:chatId', (req, res, next) => {
+    Chat.findById(req.params.chatId)
+        .populate('users')
         .then((results) => res.status(200).send(results))
         .catch((error) => res.sendStatus(400))
 })
@@ -37,6 +44,12 @@ router.post('/', async(req, res, next) => {
 
     Chat.create(dataChat)
         .then((results) => res.status(200).send(results))
+        .catch((error) => res.sendStatus(400))
+})
+
+router.put('/:chatId', (req, res, next) => {
+    Chat.findByIdAndUpdate(req.params.chatId, req.body)
+        .then((results) => res.status(204).send(results))
         .catch((error) => res.sendStatus(400))
 })
 
