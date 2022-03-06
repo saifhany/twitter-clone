@@ -78,16 +78,21 @@ nav a.blue {
 }
 
 .wrapper {
-    overflow-x: hidden;
-    /* display: flex; */
-    /* flex-direction: column; */
+    display: flex;
+    flex-direction: column;
     height: 100%;
-    /* min-height: 100%; */
+}
+
+.wrapper>.row {
+    margin: 0;
+    height: 100%;
 }
 
 .mainSectionContainer {
     padding: 0;
     border-left: 1px solid var(--lightGrey);
+    display: flex;
+    flex-direction: column;
 }
 
 .titleContainer {
@@ -432,8 +437,7 @@ nav a.blue {
 .chatPageContainer {
     display: flex;
     flex-direction: column;
-    /* flex: 1; */
-    height: 100%;
+    flex: 1;
 }
 
 .chatTitleBar {
