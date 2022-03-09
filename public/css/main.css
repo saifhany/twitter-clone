@@ -569,6 +569,7 @@ nav a.blue {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    padding: var(--spacing);
 }
 
 .chatContainer .footer {
@@ -608,4 +609,57 @@ nav a.blue {
 
 #chatNameTextBox {
     width: 100%;
+}
+
+.chatMessages .message {
+    list-style: none;
+    display: flex;
+}
+
+.chatMessages .message .messageBody {
+    background-color: #f1f1f1;
+    padding: 6px 12px;
+    border-radius: 18px;
+    font-size: 14px;
+}
+
+.chatMessages .message .messageContainer {
+    margin-bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    max-width: 55%;
+}
+
+.chatMessages .message.mine {
+    flex-direction: row-reverse;
+}
+
+.chatMessages .message.mine .messageBody {
+    background-color: var(--blue);
+    color: #fff;
+}
+
+.chatMessages .message.mine .messageContainer {
+    align-items: flex-end;
+}
+
+.chatMessages .message.theirs:not(.last) .messageContainer {
+    margin-left: 30px;
+}
+
+.chatMessages .message .imageContainer {
+    height: 24px;
+    width: 24px;
+    margin-right: 7px;
+}
+
+.chatMessages img {
+    height: 100%;
+    border-radius: 50%;
+}
+
+.senderName {
+    color: rgba(0, 0, 0, 0.4);
+    margin-bottom: 4px;
+    font-size: 15px;
 }
