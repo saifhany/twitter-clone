@@ -14,6 +14,8 @@ block content
             .mainContentContainer
                 .chatContainer
                     ul.chatMessages
+                    .typingDots
+                        img(src="/images/dots.gif", alt="User is typing")
                     .footer
                         textarea.inputTextBox(name="messageInput", placeholder="Type a message...") 
                         button.sendMessageButton

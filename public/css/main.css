@@ -616,11 +616,21 @@ nav a.blue {
     display: flex;
 }
 
+.typingDots img,
 .chatMessages .message .messageBody {
     background-color: #f1f1f1;
     padding: 6px 12px;
     border-radius: 18px;
     font-size: 14px;
+}
+
+.typingDots {
+    padding: 0 15px;
+    display: none;
+}
+
+.typingDots img {
+    height: 35px;
 }
 
 .chatMessages .message .messageContainer {

@@ -475,3 +475,11 @@ function timeDifference(current, previous) {
         return Math.round(elapsed / msPerYear) + ' years ago'
     }
 }
+
+function messageRecieved(message) {
+    if ($('.chatContainer').length === 0) {
+        // show notification
+    } else {
+        addChatMessageHtml(message)
+    }
+}

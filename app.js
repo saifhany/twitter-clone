@@ -13,6 +13,8 @@ const server = app.listen(port, () =>
     console.log('Server listening on port ' + port)
 )
 
+const io = require('socket.io')(server, { pingTimeout: 60000 })
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -64,4 +66,24 @@ app.get('/', middleware.requireLogin, (req, res, next) => {
         userInJS: JSON.stringify(req.session.user),
     }
     res.status('200').render('home', payload)
+})
+
+io.on('connection', (socket) => {
+    socket.on('setup', (userData) => {
+        socket.join(userData._id)
+        socket.emit('connected')
+    })
+
+    socket.on('join chat', (chatId) => socket.join(chatId))
+    socket.on('typing', (chatId) => socket.in(chatId).emit('typing'))
+    socket.on('stop typing', (chatId) => socket.in(chatId).emit('stop typing'))
+
+    socket.on('new message', (message) => {
+        const chat = message.chat
+
+        chat.users.forEach((user) => {
+            if (user._id === message.sender._id) return
+            socket.in(user._id).emit('message recieved', message)
+        })
+    })
 })
