@@ -4,6 +4,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const Post = require('../../schemas/PostSchema')
 const User = require('../../schemas/UserSchema')
+const Notification = require('../../schemas/NotificationSchema')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -83,6 +84,14 @@ router.post('/', async(req, res, next) => {
     Post.create(postData)
         .then(async(newPost) => {
             newPost = await User.populate(newPost, { path: 'postedBy' })
+            if (newPost.replyTo !== undefined) {
+                await Notification.insertNotification(
+                    req.body.replyTo,
+                    req.session.user._id,
+                    'reply',
+                    newPost._id
+                )
+            }
             res.status(201).send(newPost)
         })
         .catch((error) => res.sendStatus(400))
@@ -109,6 +118,15 @@ router.put('/:id/like', async(req, res, next) => {
         }, { new: true }
     ).catch((error) => res.sendStatus(400))
 
+    if (!isLiked) {
+        await Notification.insertNotification(
+            post.postedBy,
+            userId,
+            'like',
+            post._id
+        )
+    }
+
     res.status(200).send(post)
 })
 
@@ -117,14 +135,14 @@ router.post('/:id/retweet', async(req, res, next) => {
     var userId = req.session.user._id
 
     // Unretweet
-    var unretweet = await Post.findOneAndDelete({
+    var retweet = await Post.findOneAndDelete({
         postedBy: userId,
         retweetData: postId,
     }).catch((error) => res.sendStatus(400))
 
-    var option = unretweet != null ? '$pull' : '$addToSet'
+    var option = retweet != null ? '$pull' : '$addToSet'
 
-    var repost = unretweet
+    var repost = retweet
 
     if (repost === null) {
         repost = await Post.create({ postedBy: userId, retweetData: postId }).catch(
@@ -143,6 +161,15 @@ router.post('/:id/retweet', async(req, res, next) => {
             [option]: { retweetUsers: userId },
         }, { new: true }
     ).catch((error) => res.sendStatus(400))
+
+    if (!retweet) {
+        await Notification.insertNotification(
+            post.postedBy,
+            userId,
+            'retweet',
+            post._id
+        )
+    }
 
     res.status(200).send(post)
 })
