@@ -673,3 +673,11 @@ nav a.blue {
     margin-bottom: 4px;
     font-size: 15px;
 }
+
+.resultListItem.active {
+    background-color: var(--blueBackground);
+}
+
+.resultListItem.notification * {
+    pointer-events: none;
+}

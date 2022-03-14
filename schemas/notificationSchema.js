@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 const NotificationSchema = new Schema({
     userTo: { type: Schema.Types.ObjectId, ref: 'User' },
     userFrom: { type: Schema.Types.ObjectId, ref: 'User' },
-    notification: String,
+    type: String,
     opened: { type: Boolean, default: false },
     entityId: Schema.Types.ObjectId,
 }, { timestamps: true })
@@ -13,13 +13,13 @@ const NotificationSchema = new Schema({
 NotificationSchema.statics.insertNotification = async(
     userTo,
     userFrom,
-    notification,
+    type,
     entityId
 ) => {
     const data = {
         userTo,
         userFrom,
-        notification,
+        type,
         entityId,
     }
 
