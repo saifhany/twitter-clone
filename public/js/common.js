@@ -1,5 +1,43 @@
 var cropper = ''
 
+$(document).ready(() => {
+    refreshMessageBadge()
+    refreshNotificationBadge()
+})
+
+function messageRecieved(message) {
+    if ($('.chatContainer').length === 0) {
+        // show notification
+    } else {
+        addChatMessageHtml(message)
+    }
+    refreshMessageBadge()
+}
+
+function refreshMessageBadge() {
+    $.get('/api/chat', { unreadOnly: true }, (data) => {
+        const numberLength = data.length
+
+        if (numberLength > 0) {
+            $('#messageBadge').text(numberLength).addClass('active')
+        } else {
+            $('#messageBadge').text('').removeClass('active')
+        }
+    })
+}
+
+function refreshNotificationBadge() {
+    $.get('/api/notification', { unreadOnly: true }, (data) => {
+        const numberLength = data.length
+
+        if (numberLength > 0) {
+            $('#notificationBadge').text(numberLength).addClass('active')
+        } else {
+            $('#notificationBadge').text('').removeClass('active')
+        }
+    })
+}
+
 $('#postTextarea, #replyTextarea').keyup((event) => {
     var textarea = $(event.target)
     var value = textarea.val().trim()
@@ -32,6 +70,7 @@ $('#submitFormButton, #submitReply').click((event) => {
 
     $.post('/api/post', data, (postData) => {
         if (postData.replyTo) {
+            emitNotification(postData.postedBy)
             location.reload()
         } else {
             var html = createPost(postData)
@@ -205,9 +244,12 @@ $(document).on('click', '.likeButton', (event) => {
         success: (postData) => {
             button.find('span').text(postData.likes.length || '')
 
-            postData.likes.includes(user._id) ?
-                button.addClass('active') :
+            if (postData.likes.includes(user._id)) {
+                button.addClass('active')
+                emitNotification(postData.postedBy)
+            } else {
                 button.removeClass('active')
+            }
         },
     })
 })
@@ -223,9 +265,12 @@ $(document).on('click', '.retweetButton', (event) => {
         type: 'post',
         success: (postData) => {
             button.find('span').text(postData.retweetUsers.length || '')
-            postData.retweetUsers.includes(user._id) ?
-                button.addClass('active') :
+            if (postData.retweetUsers.includes(user._id)) {
+                button.addClass('active')
+                emitNotification(postData.postedBy)
+            } else {
                 button.removeClass('active')
+            }
         },
     })
 })
@@ -247,6 +292,7 @@ $(document).on('click', '.followButton', (event) => {
             if (data.following && data.following.includes(userId)) {
                 btn.addClass('following')
                 btn.text('Following')
+                emitNotification(userId)
             } else {
                 btn.removeClass('following')
                 btn.text('Follow')

@@ -7,10 +7,16 @@ const Notification = require('../../schemas/NotificationSchema')
 app.use(bodyParser.urlencoded({ extended: false }))
 
 router.get('/', (req, res, next) => {
-    Notification.find({
-            userTo: req.session.user._id,
-            type: { $ne: 'newMessage' },
-        })
+    var searchObj = {
+        userTo: req.session.user._id,
+        type: { $ne: 'newMessage' },
+    }
+
+    if (req.query.unreadOnly && req.query.unreadOnly == 'true') {
+        searchObj.opened = false
+    }
+
+    Notification.find(searchObj)
         .populate('userTo')
         .populate('userFrom')
         .sort({ createdAt: -1 })

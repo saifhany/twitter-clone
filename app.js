@@ -81,6 +81,9 @@ io.on('connection', (socket) => {
     socket.on('join chat', (chatId) => socket.join(chatId))
     socket.on('typing', (chatId) => socket.in(chatId).emit('typing'))
     socket.on('stop typing', (chatId) => socket.in(chatId).emit('stop typing'))
+    socket.on('notification received', (userId) =>
+        socket.in(userId).emit('notification received')
+    )
 
     socket.on('new message', (message) => {
         const chat = message.chat

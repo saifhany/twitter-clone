@@ -57,6 +57,28 @@ nav {
     height: 100%;
 }
 
+#notificationBadge,
+#messageBadge {
+    background-color: var(--red);
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #fff;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+}
+
+#notificationBadge.active,
+#messageBadge.active {
+    visibility: visible;
+}
+
 nav a {
     padding: 10px;
     font-size: 30px;
@@ -65,6 +87,7 @@ nav a {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 nav a:hover {

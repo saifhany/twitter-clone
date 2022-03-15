@@ -7,3 +7,13 @@ socket.on('connected', () => (connected = true))
 socket.emit('setup', user)
 
 socket.on('message recieved', (message) => messageRecieved(message))
+
+socket.on('notification received', () => {
+    refreshNotificationBadge()
+})
+
+const emitNotification = (userId) => {
+    if (userId == user._id) return
+
+    socket.emit('notification received', userId)
+}
