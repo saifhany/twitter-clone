@@ -1,7 +1,5 @@
 $(document).ready(() => {
-    $.get('/api/notification', (data) => {
-        outputNotification(data, $('.resultsContainer'))
-    })
+    getDataNotification()
 })
 
 $(document).on('click', '.notification.active', (e) => {
@@ -17,7 +15,14 @@ $(document).on('click', '.notification.active', (e) => {
 
 $('#markAsRead').click(() => markAsOpened())
 
+const getDataNotification = () => {
+    $.get('/api/notification', (data) => {
+        outputNotification(data, $('.notificationContainer'))
+    })
+}
+
 const outputNotification = (notifications, container) => {
+    container.html('')
     notifications.forEach((notification) => {
         const html = outputNotificationHtml(notification)
         container.append(html)

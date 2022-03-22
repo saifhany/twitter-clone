@@ -1,10 +1,15 @@
 var selectedUsers = []
 
 $(document).ready(() => {
-    $.get('/api/chat', (chats) => outputChats(chats, $('.chatsContainer')))
+    getChat()
 })
 
+const getChat = () => {
+    $.get('/api/chat', (chats) => outputChats(chats, $('.chatListContainer')))
+}
+
 const outputChats = (chats, container) => {
+    container.html('')
     chats.forEach((chat) => {
         var html = createChatHtml(chat)
         container.append(html)
@@ -13,65 +18,6 @@ const outputChats = (chats, container) => {
     if (chats.length == 0) {
         container.append('<span class="noResults">Nothing to show</span>')
     }
-}
-
-const createChatHtml = (chat) => {
-    var name = getChatName(chat)
-    var image = getChatImageElement(chat)
-    var latestMessage = getLatestMessage(chat.latestMessage)
-        // var latestMessage = 'jkjkj'
-
-    return `<a href='/message/${chat._id}' class='resultListItem'>
-                ${image}
-                <div class='resultsDetailContainer'>
-                    <span class='heading'>${name}</span>
-                    <span class='subText'>${latestMessage}</span>
-                </div>
-            </a>`
-}
-
-const getLatestMessage = (latestMessage) => {
-    if (latestMessage != null) {
-        const sender = latestMessage.sender
-        return `${sender.firstName} ${sender.lastName}: ${latestMessage.content}`
-    }
-
-    return 'New chat'
-}
-
-const getChatUsers = (users) => {
-    if (users.length == 1) return users
-
-    return users.filter((item) => item._id != user._id)
-}
-
-const getChatName = (chat) => {
-    var chatName = chat.chatName
-
-    if (!chatName) {
-        var users = getChatUsers(chat.users)
-        var namesArray = users.map((item) => item.firstName + ' ' + item.lastName)
-        chatName = namesArray.join(', ')
-    }
-
-    return chatName
-}
-
-const getChatImageElement = (chat) => {
-    var users = getChatUsers(chat.users)
-
-    var classImage = ''
-    var image = getUserChatImage(users[0])
-    if (users.length > 1) {
-        var classImage = 'groupChatImage'
-        image += getUserChatImage(users[1])
-    }
-
-    return `<div class='resultImageContainer ${classImage}'>${image}</div>`
-}
-
-const getUserChatImage = (dataUser) => {
-    return `<img src='${dataUser.profilePic}' alt="User's profile pic"></img>`
 }
 
 $('#userSearchBox').keydown((e) => {

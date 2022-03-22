@@ -9,7 +9,7 @@ socket.emit('setup', user)
 socket.on('message recieved', (message) => messageRecieved(message))
 
 socket.on('notification received', () => {
-    refreshNotificationBadge()
+    $.get('/api/notification/latest', (data) => notificationReceived(data))
 })
 
 const emitNotification = (userId) => {

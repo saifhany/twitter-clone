@@ -14,10 +14,14 @@ router.get('/', (req, res, next) => {
         .populate('latestMessage')
         .sort({ updatedAt: -1 })
         .then(async(results) => {
-            if (req.query.unreadOnly && req.query.unreadOnly == 'true') {
-                results = results.filter(
-                    (result) =>
-                    !result.latestMessage.readBy.includes(req.session.user._id)
+            if (
+                req.query.unreadOnly !== undefined &&
+                req.query.unreadOnly == 'true'
+            ) {
+                results = results.filter((r) =>
+                    r.latestMessage && r.latestMessage.sender != req.session.user._id ?
+                    !r.latestMessage.readBy.includes(req.session.user._id) :
+                    false
                 )
             }
 
@@ -70,6 +74,12 @@ router.post('/', async(req, res, next) => {
 router.put('/:chatId', (req, res, next) => {
     Chat.findByIdAndUpdate(req.params.chatId, req.body)
         .then((results) => res.status(204).send(results))
+        .catch((error) => res.sendStatus(400))
+})
+
+router.put('/:chatId/markAsRead', (req, res, next) => {
+    Message.updateMany({ chat: req.params.chatId }, { $addToSet: { readBy: req.session.user._id } })
+        .then(() => res.sendStatus(204))
         .catch((error) => res.sendStatus(400))
 })
 

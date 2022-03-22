@@ -24,3 +24,16 @@ function loadReplies() {
         outputPost(results, $('.postsContainer'))
     })
 }
+
+function outputPinnedPost(results, container) {
+    if (results.length === 0) {
+        container.hide()
+    }
+
+    container.html('')
+
+    results.forEach((result) => {
+        var html = createPost(result)
+        container.append(html)
+    })
+}

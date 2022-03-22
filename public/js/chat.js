@@ -19,8 +19,18 @@ $(document).ready(() => {
         })
 
         addMessageHtmlToPage(messages)
+        markAsRead()
+        scrollToBottom(false)
     })
 })
+
+function markAsRead() {
+    $.ajax({
+        url: `/api/chat/${chatId}/markAsRead`,
+        type: 'PUT',
+        success: () => refreshMessageBadge(),
+    })
+}
 
 $('#chatNameButton').click(() => {
     var name = $('#chatNameTextBox').val().trim()
@@ -97,6 +107,7 @@ function sendMessage(content) {
 function addChatMessageHtml(message) {
     const messageHtml = createChatMessageHtml(message)
     addMessageHtmlToPage(messageHtml)
+    scrollToBottom(true)
 }
 
 function addMessageHtmlToPage(html) {
@@ -141,4 +152,15 @@ function createChatMessageHtml(message, nextMessage, lastSenderId) {
                         ${message.content}
                 </div>
             </li>`
+}
+
+function scrollToBottom(animate) {
+    const container = $('.chatMessages')
+    const scrollHeight = container[0].scrollHeight
+
+    if (animate) {
+        container.animate({ scrollTop: scrollHeight }, 'slow')
+    } else {
+        container.scrollTop(scrollHeight)
+    }
 }

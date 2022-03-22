@@ -12,7 +12,7 @@ block content
                 +createChatImage(chat, user)
                 span#chatName(data-toggle='modal', data-target='#chatNameModal') #{chat.chatName}
             .mainContentContainer
-                .chatContainer
+                .chatContainer(data-room=chat._id)
                     ul.chatMessages
                     .typingDots
                         img(src="/images/dots.gif", alt="User is typing")

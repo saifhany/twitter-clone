@@ -1,18 +1,11 @@
 var cropper = ''
 
+// NOTIFICATION
+
 $(document).ready(() => {
     refreshMessageBadge()
     refreshNotificationBadge()
 })
-
-function messageRecieved(message) {
-    if ($('.chatContainer').length === 0) {
-        // show notification
-    } else {
-        addChatMessageHtml(message)
-    }
-    refreshMessageBadge()
-}
 
 function refreshMessageBadge() {
     $.get('/api/chat', { unreadOnly: true }, (data) => {
@@ -38,6 +31,110 @@ function refreshNotificationBadge() {
     })
 }
 
+function messageRecieved(message) {
+    if ($('.chatListContainer').length === 1) {
+        // update chat list
+        getChat()
+    } else if ($(`[data-room=${message.chat._id}]`).length === 0) {
+        newMessagePopUp(message)
+    } else {
+        addChatMessageHtml(message)
+    }
+    refreshMessageBadge()
+}
+
+function notificationReceived(notification) {
+    if ($('.notificationContainer').length === 0) {
+        newNotification(notification)
+    } else {
+        getDataNotification()
+    }
+    refreshNotificationBadge()
+}
+
+// NOTIFICATION POPUP
+function newNotification(notificationData) {
+    const html = outputNotificationHtml(notificationData)
+    const element = $(html)
+    element.hide().prependTo('#notificationPopUp').slideDown('fast')
+    setTimeout(() => element.fadeOut(400), 5000)
+}
+
+function newMessagePopUp(data) {
+    if (!data.chat.latestMessage._id) {
+        data.chat.latestMessage = data
+    }
+    const html = createChatHtml(data.chat)
+    const element = $(html)
+    element.hide().prependTo('#notificationPopUp').slideDown('fast')
+    setTimeout(() => element.fadeOut(400), 5000)
+}
+
+// CHAT HTML
+const createChatHtml = (chat) => {
+    var name = getChatName(chat)
+    var image = getChatImageElement(chat)
+    var latestMessage = getLatestMessage(chat.latestMessage)
+    var className = !chat.latestMessage ||
+        chat.latestMessage.sender._id === user._id ||
+        chat.latestMessage.readBy.includes(user._id) ?
+        '' :
+        'active'
+
+    return `<a href='/message/${chat._id}' class='resultListItem ${className}'>
+                ${image}
+                <div class='resultsDetailContainer'>
+                    <span class='heading'>${name}</span>
+                    <span class='subText'>${latestMessage}</span>
+                </div>
+            </a>`
+}
+
+const getLatestMessage = (latestMessage) => {
+    if (latestMessage != null) {
+        const sender = latestMessage.sender
+        return `${sender.firstName} ${sender.lastName}: ${latestMessage.content}`
+    }
+
+    return 'New chat'
+}
+
+const getChatUsers = (users) => {
+    if (users.length == 1) return users
+
+    return users.filter((item) => item._id != user._id)
+}
+
+const getChatName = (chat) => {
+    var chatName = chat.chatName
+
+    if (!chatName) {
+        var users = getChatUsers(chat.users)
+        var namesArray = users.map((item) => item.firstName + ' ' + item.lastName)
+        chatName = namesArray.join(', ')
+    }
+
+    return chatName
+}
+
+const getChatImageElement = (chat) => {
+    var users = getChatUsers(chat.users)
+
+    var classImage = ''
+    var image = getUserChatImage(users[0])
+    if (users.length > 1) {
+        var classImage = 'groupChatImage'
+        image += getUserChatImage(users[1])
+    }
+
+    return `<div class='resultImageContainer ${classImage}'>${image}</div>`
+}
+
+const getUserChatImage = (dataUser) => {
+    return `<img src='${dataUser.profilePic}' alt="User's profile pic"></img>`
+}
+
+// POST & REPLY
 $('#postTextarea, #replyTextarea').keyup((event) => {
     var textarea = $(event.target)
     var value = textarea.val().trim()
@@ -81,6 +178,21 @@ $('#submitFormButton, #submitReply').click((event) => {
     })
 })
 
+$('#replyModal').on('show.bs.modal', (event) => {
+    var button = $(event.relatedTarget)
+    var postId = getPostId(button)
+    $('#submitReply').data('id', postId)
+
+    $.get(`/api/post/${postId}`, (result) => {
+        outputPost(result.postData, $('#originalPostContainer'))
+    })
+})
+
+$('#replyModal').on('hidden.bs.modal', () =>
+    $('#originalPostContainer').html('')
+)
+
+// DELETE FITUR
 $('#deletePostModal').on('click', (event) => {
     var postId = $(event.target).data('id')
 
@@ -97,6 +209,7 @@ $('#deletePostModal').on('show.bs.modal', (event) => {
     $('#deletePostButton').data('id', postId)
 })
 
+// PIN FITUR
 $('#pinModal').on('show.bs.modal', (event) => {
     var button = $(event.relatedTarget)
     var postId = getPostId(button)
@@ -131,20 +244,7 @@ $('#unpinButton').on('click', (event) => {
     })
 })
 
-$('#replyModal').on('show.bs.modal', (event) => {
-    var button = $(event.relatedTarget)
-    var postId = getPostId(button)
-    $('#submitReply').data('id', postId)
-
-    $.get(`/api/post/${postId}`, (result) => {
-        outputPost(result.postData, $('#originalPostContainer'))
-    })
-})
-
-$('#replyModal').on('hidden.bs.modal', () =>
-    $('#originalPostContainer').html('')
-)
-
+// PHOTO PROFIL & COVER
 $('#fileUpload').change(function() {
     if (this.files && this.files[0]) {
         var reader = new FileReader()
@@ -223,6 +323,7 @@ $('#coverPhotoButton').click(() => {
     })
 })
 
+// SELECT POST
 $(document).on('click', '.post', (event) => {
     var element = $(event.target)
     var postId = getPostId(element)
@@ -232,6 +333,7 @@ $(document).on('click', '.post', (event) => {
     }
 })
 
+// CLICK LIKE BUTTON
 $(document).on('click', '.likeButton', (event) => {
     var button = $(event.target)
     var postId = getPostId(button)
@@ -254,6 +356,7 @@ $(document).on('click', '.likeButton', (event) => {
     })
 })
 
+// CLICK RETWEET BUTTON
 $(document).on('click', '.retweetButton', (event) => {
     var button = $(event.target)
     var postId = getPostId(button)
@@ -275,6 +378,7 @@ $(document).on('click', '.retweetButton', (event) => {
     })
 })
 
+// CLICK FOLLOW BUTTON
 $(document).on('click', '.followButton', (event) => {
     var btn = $(event.target)
     var userId = btn.data().user
@@ -309,48 +413,7 @@ $(document).on('click', '.followButton', (event) => {
     })
 })
 
-function outputPinnedPost(results, container) {
-    if (results.length === 0) {
-        container.hide()
-    }
-
-    container.html('')
-
-    results.forEach((result) => {
-        var html = createPost(result)
-        container.append(html)
-    })
-}
-
-function outputPost(results, container) {
-    container.html('')
-    if (!Array.isArray(results)) {
-        results = [results]
-    }
-
-    results.forEach((result) => {
-        var html = createPost(result)
-        container.append(html)
-    })
-}
-
-function outputPostWithReplies(result, container) {
-    container.html('')
-
-    if (result.replyTo !== undefined && result.replyTo._id !== undefined) {
-        var html = createPost(result.replyTo)
-        container.append(html)
-    }
-
-    var mainHtml = createPost(result.postData)
-    container.append(mainHtml)
-
-    result.replies.forEach((result) => {
-        var reply = createPost(result)
-        container.append(reply)
-    })
-}
-
+// GET POST ID
 function getPostId(element) {
     var root = element.hasClass('.post')
     var rootElement = root ? element : element.closest('.post')
@@ -361,6 +424,7 @@ function getPostId(element) {
     return postId
 }
 
+// USER HTML ELEMENT
 function outputUsers(results, container) {
     container.html('')
 
@@ -399,6 +463,19 @@ function createUserHtml(data, followButton = true) {
                 </div>
                 ${button}
             </div>`
+}
+
+// ELEMET POST HTML
+function outputPost(results, container) {
+    container.html('')
+    if (!Array.isArray(results)) {
+        results = [results]
+    }
+
+    results.forEach((result) => {
+        var html = createPost(result)
+        container.append(html)
+    })
 }
 
 function createPost(postData) {
@@ -519,13 +596,5 @@ function timeDifference(current, previous) {
         return Math.round(elapsed / msPerMonth) + ' months ago'
     } else {
         return Math.round(elapsed / msPerYear) + ' years ago'
-    }
-}
-
-function messageRecieved(message) {
-    if ($('.chatContainer').length === 0) {
-        // show notification
-    } else {
-        addChatMessageHtml(message)
     }
 }

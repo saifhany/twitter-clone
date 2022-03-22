@@ -21,7 +21,7 @@ router.post('/', async(req, res, next) => {
     var username = req.body.logUsername
     var password = req.body.logPassword
 
-    var payload
+    var payload = req.body
 
     if (username && password) {
         var user = await User.findOne({
